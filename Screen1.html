@@ -10,26 +10,74 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script>
+
+        function show_success_message() {
+            $("#form-submit-button").css({'display':'none'});
+            $("#form-reset-button").css({'display':'none'});
+            $("#form-container").css({'display':'none'});
+            $("#failure-message-container").css({'display':'none'});
+            $("#success-message-container").css({'display':'block'});
+        }
+
+        function show_failure_message() {
+            $("#form-submit-button").css({'display':'none'});
+            $("#form-reset-button").css({'display':'none'});
+            $("#form-container").css({'display':'none'});
+            $("#failure-message-container").css({'display':'block'});
+            $("#success-message-container").css({'display':'none'});
+        }
+
+        function make_ajax_call(form) {
+
+            var contact_details = {
+                'name': form.name.value,
+                'email': form.email.value,
+                'message': (form.message.value) ? form.message.value : ""
+            };
+
+
+            $.ajax({
+                type: "POST",
+                url: "contact.php",
+                data: contact_details
+            }).done(function (data) {
+                show_success_message();
+            }).fail(function (data) {
+                show_failure_message();
+            });
+        }
+
         function reset_contact_form() {
-            document.getElementById('contact-form').reset();
+            var form = document.getElementById('contact-form');
+            form.reset();
+            form.classList.remove('was-validated');
         }
         function close_contact_form() {
+            $("#form-submit-button").css({'display':'flex'});
+            $("#form-reset-button").css({'display':'flex'});
+            $("#form-container").css({'display':'block'});
+            $("#failure-message-container").css({'display':'none'});
+            $("#success-message-container").css({'display':'none'});
             reset_contact_form();
             $('#myModal').modal('toggle');
         }
+        
         function validate_contact_form() {
             // Get the forms we want to add validation styles to
             var forms = document.getElementsByClassName('needs-validation');
             // Loop over them and prevent submission
-            var validation = Array.prototype.filter.call(forms, function(form) {
+            var validation = Array.prototype.filter.call(forms, function (form) {
                 if (form.checkValidity() === false) {
-                  event.preventDefault();
-                  event.stopPropagation();
+                    event.preventDefault();
+                    event.stopPropagation();
+                    form.classList.add('was-validated');
+                } else {
+                    make_ajax_call(form);
                 }
-                form.classList.add('was-validated');
+
             });
         }
-        </script>
+    </script>
 </head>
 
 <!-- Section jump code - Scrollpy -->
@@ -107,8 +155,7 @@
                 </p>
             </div>
             <div class="col-sm-5">
-                <img width="100%" class="img-thumbnail" src="images/About.jpg"
-                    alt="About">
+                <img width="100%" class="img-thumbnail" src="images/About.jpg" alt="About">
             </div>
         </div>
         <br>
@@ -140,11 +187,11 @@
         <div class="row">
             <div class="card-deck">
                 <div class="card">
-                    <div class="text-center" style="padding:5px">
-                            <img class="card-img-top" src="images/demand/analysis.png"
-                            alt="follow Paris Agreement and IPCC report" style="width:200px;height:auto;">
+                    <div class="text-center" style="padding:5px; margin-top: 10px;">
+                        <img class="card-img-top" src="images/demand/analysis.png"
+                            alt="follow Paris Agreement and IPCC report" style="width:120px;height:auto;">
                     </div>
-                    
+
                     <div class="card-body">
                         <table>
                             <tr>
@@ -156,7 +203,8 @@
                                 <td>
                                     <p class="card-text">A landmark study by the UN that states we have 11 years to mend
                                         our ways.<br> <br>
-                                        <a href="https://unfccc.int/sites/default/files/english_paris_agreement.pdf"> Read More</a>
+                                        <a href="https://unfccc.int/sites/default/files/english_paris_agreement.pdf">
+                                            Read More</a>
                                     </p>
                                 </td>
                             </tr>
@@ -167,11 +215,11 @@
                 </div>
 
                 <div class="card">
-                    <div class="text-center" style="padding:5px">
-                            <img class="card-img-top" src="images/demand/hot.png"
-                            alt="stay below 1.5 C" style="width:200px;height:auto;">
+                    <div class="text-center" style="padding:5px; margin-top: 10px;">
+                        <img class="card-img-top" src="images/demand/hot.png" alt="stay below 1.5 C"
+                            style="width:120px;height:auto;">
                     </div>
-                    
+
                     <div class="card-body">
                         <table>
                             <tr>
@@ -193,11 +241,11 @@
                 </div>
 
                 <div class="card">
-                    <div class="text-center" style="padding:5px">
-                            <img class="card-img-top" src="images/demand/hammer.png"
-                            alt="focus on equity and justice" style="width:200px;height:auto;">
+                    <div class="text-center" style="padding:5px; margin-top: 10px;">
+                        <img class="card-img-top" src="images/demand/hammer.png" alt="focus on equity and justice"
+                            style="width:120px;height:auto;">
                     </div>
-                    
+
                     <div class="card-body">
                         <table>
                             <tr>
@@ -220,11 +268,11 @@
 
 
                 <div class="card">
-                    <div class="text-center" style="padding:5px">
-                            <img class="card-img-top" src="images/demand/atomic.png"
-                            alt="Paris" style="width:200px;height:auto;">
+                    <div class="text-center" style="padding:5px; margin-top: 10px;">
+                        <img class="card-img-top" src="images/demand/atomic.png" alt="Paris"
+                            style="width:120px;height:auto;">
                     </div>
-                    
+
                     <div class="card-body">
                         <table>
                             <tr>
@@ -262,9 +310,7 @@
             <div class="col-md-4">
                 <div class="container mt-3">
                     <div class="media border p-3">
-                        <img src="images/rules/stop.png"
-                            alt="No violence" 
-                            class="mr-3 mt-3 rounded-circle" 
+                        <img src="images/rules/stop.png" alt="No violence" class="mr-3 mt-3 rounded-circle"
                             style="width:60px; margin-top: 0px !important;">
                         <div class="media-body">
                             <h4>No <br>violence </h4>
@@ -276,8 +322,8 @@
             <div class="col-md-4">
                 <div class="container mt-3">
                     <div class="media border p-3">
-                        <img src="images/rules/no-fire.png"
-                            alt="No damage" class="mr-3 mt-3 rounded-circle" style="width:60px; margin-top: 0px !important;">
+                        <img src="images/rules/no-fire.png" alt="No damage" class="mr-3 mt-3 rounded-circle"
+                            style="width:60px; margin-top: 0px !important;">
                         <div class="media-body">
                             <h4>No <br>damage</h4>
                         </div>
@@ -289,8 +335,8 @@
             <div class="col-md-4">
                 <div class="container mt-3">
                     <div class="media border p-3">
-                        <img src="images/rules/litter.png"
-                            alt="No littering" class="mr-3 mt-3 rounded-circle" style="width:60px; margin-top: 0px !important;">
+                        <img src="images/rules/litter.png" alt="No littering" class="mr-3 mt-3 rounded-circle"
+                            style="width:60px; margin-top: 0px !important;">
                         <div class="media-body">
                             <h4>No <br>littering </h4>
                         </div>
@@ -306,8 +352,8 @@
             <div class="col-md-4">
                 <div class="container mt-3">
                     <div class="media border p-3">
-                        <img src="images/rules/profits.png"
-                            alt="No profit" class="mr-3 mt-3 rounded-circle" style="width:60px; margin-top: 0px !important">
+                        <img src="images/rules/profits.png" alt="No profit" class="mr-3 mt-3 rounded-circle"
+                            style="width:60px; margin-top: 0px !important">
                         <div class="media-body">
                             <h4>No <br>profit</h4>
                         </div>
@@ -318,8 +364,8 @@
             <div class="col-md-4">
                 <div class="container mt-3">
                     <div class="media border p-3">
-                        <img src="images/rules/heart.png" alt="No hate"
-                            class="mr-3 mt-3 rounded-circle" style="width:60px; margin-top: 0px !important">
+                        <img src="images/rules/heart.png" alt="No hate" class="mr-3 mt-3 rounded-circle"
+                            style="width:60px; margin-top: 0px !important">
                         <div class="media-body">
                             <h4>No <br>hate</h4>
                         </div>
@@ -331,8 +377,8 @@
             <div class="col-md-4">
                 <div class="container mt-3">
                     <div class="media border p-3">
-                        <img src="images/rules/co2.png"
-                            alt="Minimize carbon footprint" class="mr-3 mt-3 rounded-circle" style="width:60px;margin-top: 0px !important">
+                        <img src="images/rules/co2.png" alt="Minimize carbon footprint" class="mr-3 mt-3 rounded-circle"
+                            style="width:60px;margin-top: 0px !important">
                         <div class="media-body">
                             <h4>Minimize carbon <br>footprint</h4>
                         </div>
@@ -348,8 +394,7 @@
             <div class="col-md-4">
                 <div class="container mt-3">
                     <div class="media border p-3">
-                        <img src="images/rules/biology.png"
-                            alt="Refer to science" class="mr-3 mt-3 rounded-circle"
+                        <img src="images/rules/biology.png" alt="Refer to science" class="mr-3 mt-3 rounded-circle"
                             style="width:60px; margin-top: 0px !important">
                         <div class="media-body">
                             <h4>Refer to <br>science </h4>
@@ -376,35 +421,60 @@
 
                 <!-- Modal body -->
                 <div class="modal-body">
-                    <form id="contact-form" class="needs-validation" novalidate>
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Name *</label>
-                            <input type="name" class="form-control" id="exampleFormControlInput2"
-                                placeholder="Your name here" required>
-                            <div class="valid-feedback">Valid.</div>
-                            <div class="invalid-feedback">Please fill out this field.</div>
+                    <!-- success message -->
+                    <div style="display:none" id="success-message-container">
+
+                        <div class="alert alert-success">
+                                Contact form successfully submitted. Thank you, We will get back to you soon!
                         </div>
 
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Email address *</label>
-                            <input type="email" class="form-control" id="exampleFormControlInput1"
-                                placeholder="name@example.com" required>
-                            <div class="valid-feedback">Valid.</div>
-                            <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                    <!-- failure message -->
+                    <div style="display:none" id="failure-message-container">
+                        <div class="alert alert-danger">
+                                There was an error while submitting the form. Please try again later
                         </div>
+                    </div>
+                    <!-- form -->
+                    <div style="display: block" id="form-container">
+                        <form id="contact-form" class="needs-validation" novalidate>
+                            
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Name *</label>
+                                <input type="name" class="form-control" name="name" id="exampleFormControlInput2"
+                                    placeholder="Your name here" required>
+                                <div class="valid-feedback">Valid.</div>
+                                <div class="invalid-feedback">Please fill out this field.</div>
+                            </div>
 
-                        <div class="form-group">
-                            <label for="exampleFormControlTextarea1">Message</label>
-                            <textarea class="form-control" placeholder="Let us know what's on your mind"
-                                id="exampleFormControlTextarea1" rows="3"></textarea>
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Email address *</label>
+                                <input type="email" class="form-control" name="email" id="exampleFormControlInput1"
+                                    placeholder="name@example.com" required>
+                                <div class="valid-feedback">Valid.</div>
+                                <div class="invalid-feedback">Please fill out this field.</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlTextarea1">Message</label>
+                                <textarea class="form-control" name="message"
+                                    placeholder="Let us know what's on your mind" id="exampleFormControlTextarea1"
+                                    rows="3"></textarea>
+                            </div>
+                        </form>
+                        <div class="alert alert-dark">
+                                NOTE: Fields with * are mandatory.
                         </div>
-                    </form>
+                    </div>
+
                 </div>
 
                 <!-- Modal footer -->
                 <div class="modal-footer" style="justify-content: space-evenly !important;">
-                    <button type="button" onclick="validate_contact_form()" class="btn btn-success">Submit</button>
-                    <button type="button" class="btn btn-secondary" onclick="reset_contact_form()">Reset</button>
+                    <button type="button" id="form-submit-button" onclick="validate_contact_form()"
+                        class="btn btn-success">Submit</button>
+                    <button type="button" id="form-reset-button" class="btn btn-secondary"
+                        onclick="reset_contact_form()">Reset</button>
                     <button type="button" class="btn btn-danger" onclick="close_contact_form()">Close</button>
                 </div>
 
@@ -416,16 +486,19 @@
             <h3>Find us on:</h3>
         </div>
         <div style="margin-top:6px" class="text-center">
-                <a href="https://www.facebook.com/fffregina/" target="_blank"><img src="images/social/facebook.png" height="32px" width="32px" class="rounded" alt="facebook"></a>
-                <a href="https://www.instagram.com/fridaysforfutureregina/" target="_blank"><img src="images/social/instagram.png" height="32px" width="32px" class="rounded" alt="instagram"></a>
-                <!-- <img src="images/social/pinterest.png" height="32px" width="32px" class="rounded" alt="pinterest">
+            <a href="https://www.facebook.com/fffregina/" target="_blank"><img src="images/social/facebook.png"
+                    height="32px" width="32px" class="rounded" alt="facebook"></a>
+            <a href="https://www.instagram.com/fridaysforfutureregina/" target="_blank"><img
+                    src="images/social/instagram.png" height="32px" width="32px" class="rounded" alt="instagram"></a>
+            <!-- <img src="images/social/pinterest.png" height="32px" width="32px" class="rounded" alt="pinterest">
                 <img src="images/social/twitter.png" height="32px" width="32px" class="rounded" alt="twitter">
                 <img src="images/social/tumblr.png" height="32px" width="32px" class="rounded" alt="tumblr"> -->
         </div>
         <br>
-        <div style="font-size: 10px;" class="text-center">Icons made by <a href="https://www.freepik.com/" target="_blank" title="Freepik">Freepik</a>,
-             <a target="_blank" href="https://www.flaticon.com/authors/smashicons"> Smashicons</a> from <a
-                href="https://www.flaticon.com/"  target="_blank" title="Flaticon">www.flaticon.com</a> is licensed by <a
+        <div style="font-size: 10px;" class="text-center">Icons made by <a href="https://www.freepik.com/"
+                target="_blank" title="Freepik">Freepik</a>,
+            <a target="_blank" href="https://www.flaticon.com/authors/smashicons"> Smashicons</a> from <a
+                href="https://www.flaticon.com/" target="_blank" title="Flaticon">www.flaticon.com</a> is licensed by <a
                 href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC
                 3.0 BY</a></div>
     </footer>
